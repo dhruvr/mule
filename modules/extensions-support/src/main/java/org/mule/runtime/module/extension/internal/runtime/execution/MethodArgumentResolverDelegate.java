@@ -23,6 +23,7 @@ import org.mule.runtime.extension.api.annotation.param.Config;
 import org.mule.runtime.extension.api.annotation.param.Connection;
 import org.mule.runtime.extension.api.annotation.param.DefaultEncoding;
 import org.mule.runtime.extension.api.annotation.param.ParameterGroup;
+import org.mule.runtime.extension.api.notification.NotificationHandler;
 import org.mule.runtime.extension.api.runtime.operation.ExecutionContext;
 import org.mule.runtime.extension.api.runtime.operation.FlowListener;
 import org.mule.runtime.extension.api.runtime.parameter.Literal;
@@ -47,6 +48,7 @@ import org.mule.runtime.module.extension.internal.runtime.resolver.ErrorArgument
 import org.mule.runtime.module.extension.internal.runtime.resolver.FlowListenerArgumentResolver;
 import org.mule.runtime.module.extension.internal.runtime.resolver.LiteralArgumentResolver;
 import org.mule.runtime.module.extension.internal.runtime.resolver.MediaTypeArgumentResolver;
+import org.mule.runtime.module.extension.internal.runtime.resolver.NotificationHandlerArgumentResolver;
 import org.mule.runtime.module.extension.internal.runtime.resolver.ParameterGroupArgumentResolver;
 import org.mule.runtime.module.extension.internal.runtime.resolver.ParameterResolverArgumentResolver;
 import org.mule.runtime.module.extension.internal.runtime.resolver.RouterCallbackArgumentResolver;
@@ -96,6 +98,8 @@ public final class MethodArgumentResolverDelegate implements ArgumentResolverDel
       new ComponentLocationArgumentResolver();
   private static final ArgumentResolver<OperationTransactionalAction> OPERATION_TRANSACTIONAL_ACTION_ARGUMENT_RESOLVER =
       new OperationTransactionalActionArgumentResolver();
+  private static final ArgumentResolver<NotificationHandler> NOTIFICATION_HANDLER_ARGUMENT_RESOLVER =
+      new NotificationHandlerArgumentResolver();
 
 
   private final Method method;
@@ -173,6 +177,8 @@ public final class MethodArgumentResolverDelegate implements ArgumentResolverDel
         argumentResolver = COMPONENT_LOCATION_ARGUMENT_RESOLVER;
       } else if (OperationTransactionalAction.class.equals(parameterType)) {
         argumentResolver = OPERATION_TRANSACTIONAL_ACTION_ARGUMENT_RESOLVER;
+      } else if (NotificationHandler.class.equals(parameterType)) {
+        argumentResolver = NOTIFICATION_HANDLER_ARGUMENT_RESOLVER;
       } else {
         argumentResolver = new ByParameterNameArgumentResolver<>(paramNames.get(i));
       }
