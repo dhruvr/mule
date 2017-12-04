@@ -10,6 +10,7 @@ import static org.mule.runtime.api.i18n.I18nMessageFactory.createStaticMessage;
 import static org.mule.runtime.api.notification.PolicyNotification.AFTER_NEXT;
 import static org.mule.runtime.api.notification.PolicyNotification.BEFORE_NEXT;
 import static org.mule.runtime.core.privileged.processor.MessageProcessors.processToApply;
+import static reactor.core.publisher.Mono.empty;
 import static reactor.core.publisher.Mono.error;
 import static reactor.core.publisher.Mono.from;
 import static reactor.core.publisher.Mono.just;
@@ -24,6 +25,7 @@ import org.mule.runtime.core.api.event.CoreEvent;
 import org.mule.runtime.core.api.processor.Processor;
 import org.mule.runtime.core.internal.exception.MessagingException;
 import org.mule.runtime.core.internal.policy.PolicyNotificationHelper;
+import org.mule.runtime.core.privileged.event.BaseEventContext;
 
 import javax.inject.Inject;
 
@@ -62,11 +64,11 @@ public class PolicyNextActionMessageProcessor extends AbstractComponent implemen
                 + event.getContext().getId())));
           }
 
+          ((BaseEventContext) event.getContext()).onResponse(notificationHelper.successOrErrorNotification(AFTER_NEXT));
+
           return just(event)
               .doOnNext(notificationHelper.notification(BEFORE_NEXT))
-              .transform(nextOperation)
-              .doOnSuccess(notificationHelper.notification(AFTER_NEXT))
-              .doOnError(MessagingException.class, notificationHelper.errorNotification(AFTER_NEXT));
+              .transform(nextOperation);
         });
   }
 

@@ -107,8 +107,7 @@ public class PolicyChain extends AbstractComponent
     return Mono.from(publisher)
         .doOnNext(notificationHelper.notification(PROCESS_START))
         .transform(chainWithPs)
-        .doOnSuccess(notificationHelper.notification(PROCESS_END))
-        .doOnError(MessagingException.class, notificationHelper.errorNotification(PROCESS_END));
+        .doOnSuccessOrError(notificationHelper.successOrErrorNotification(PROCESS_END));
   }
 
 }
