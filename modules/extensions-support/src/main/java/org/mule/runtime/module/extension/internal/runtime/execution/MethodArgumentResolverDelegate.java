@@ -23,7 +23,7 @@ import org.mule.runtime.extension.api.annotation.param.Config;
 import org.mule.runtime.extension.api.annotation.param.Connection;
 import org.mule.runtime.extension.api.annotation.param.DefaultEncoding;
 import org.mule.runtime.extension.api.annotation.param.ParameterGroup;
-import org.mule.runtime.extension.api.notification.NotificationHandler;
+import org.mule.runtime.extension.api.notification.NotificationEmitter;
 import org.mule.runtime.extension.api.runtime.operation.ExecutionContext;
 import org.mule.runtime.extension.api.runtime.operation.FlowListener;
 import org.mule.runtime.extension.api.runtime.parameter.Literal;
@@ -98,7 +98,7 @@ public final class MethodArgumentResolverDelegate implements ArgumentResolverDel
       new ComponentLocationArgumentResolver();
   private static final ArgumentResolver<OperationTransactionalAction> OPERATION_TRANSACTIONAL_ACTION_ARGUMENT_RESOLVER =
       new OperationTransactionalActionArgumentResolver();
-  private static final ArgumentResolver<NotificationHandler> NOTIFICATION_HANDLER_ARGUMENT_RESOLVER =
+  private static final ArgumentResolver<NotificationEmitter> NOTIFICATION_HANDLER_ARGUMENT_RESOLVER =
       new NotificationHandlerArgumentResolver();
 
 
@@ -177,7 +177,7 @@ public final class MethodArgumentResolverDelegate implements ArgumentResolverDel
         argumentResolver = COMPONENT_LOCATION_ARGUMENT_RESOLVER;
       } else if (OperationTransactionalAction.class.equals(parameterType)) {
         argumentResolver = OPERATION_TRANSACTIONAL_ACTION_ARGUMENT_RESOLVER;
-      } else if (NotificationHandler.class.equals(parameterType)) {
+      } else if (NotificationEmitter.class.equals(parameterType)) {
         argumentResolver = NOTIFICATION_HANDLER_ARGUMENT_RESOLVER;
       } else {
         argumentResolver = new ByParameterNameArgumentResolver<>(paramNames.get(i));

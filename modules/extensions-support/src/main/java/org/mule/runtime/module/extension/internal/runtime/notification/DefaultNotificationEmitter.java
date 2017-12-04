@@ -10,19 +10,19 @@ import org.mule.runtime.api.component.location.ComponentLocation;
 import org.mule.runtime.core.api.context.notification.ServerNotificationManager;
 import org.mule.runtime.core.api.event.CoreEvent;
 import org.mule.runtime.extension.api.notification.ExtensionNotification;
-import org.mule.runtime.extension.api.notification.NotificationHandler;
+import org.mule.runtime.extension.api.notification.NotificationEmitter;
 import org.mule.runtime.extension.api.notification.NotificationInfo;
 
 /**
- * Default implementation of {@link NotificationHandler}.
+ * Default implementation of {@link NotificationEmitter}.
  */
-public class DefaultNotificationHandler implements NotificationHandler {
+public class DefaultNotificationEmitter implements NotificationEmitter {
 
   private final ServerNotificationManager notificationManager;
   private final CoreEvent event;
   private final ComponentLocation componentLocation;
 
-  public DefaultNotificationHandler(ServerNotificationManager notificationManager, CoreEvent event,
+  public DefaultNotificationEmitter(ServerNotificationManager notificationManager, CoreEvent event,
                                     ComponentLocation componentLocation) {
     this.notificationManager = notificationManager;
     this.event = event;
@@ -30,12 +30,8 @@ public class DefaultNotificationHandler implements NotificationHandler {
   }
 
   @Override
-  public void fireWith(NotificationInfo notificationInfo) {
-    notificationManager.fireNotification(ExtensionNotification.builder()
-        .event(event)
-        .componentLocation(componentLocation)
-        .info(notificationInfo)
-        .build());
+  public void fire(NotificationInfo notificationInfo) {
+    notificationManager.fireNotification(new ExtensionNotification(event, componentLocation, notificationInfo));
   }
 
 }

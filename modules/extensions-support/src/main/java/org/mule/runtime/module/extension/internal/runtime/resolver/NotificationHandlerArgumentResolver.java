@@ -6,22 +6,22 @@
  */
 package org.mule.runtime.module.extension.internal.runtime.resolver;
 
-import org.mule.runtime.extension.api.notification.NotificationHandler;
+import org.mule.runtime.extension.api.notification.NotificationEmitter;
 import org.mule.runtime.extension.api.runtime.operation.ExecutionContext;
 import org.mule.runtime.module.extension.api.runtime.privileged.ExecutionContextAdapter;
-import org.mule.runtime.module.extension.internal.runtime.notification.DefaultNotificationHandler;
+import org.mule.runtime.module.extension.internal.runtime.notification.DefaultNotificationEmitter;
 
 /**
- * {@link ArgumentResolver} implementation for {@link NotificationHandler} parameters.
+ * {@link ArgumentResolver} implementation for {@link NotificationEmitter} parameters.
  *
  * @since 4.1
  */
-public class NotificationHandlerArgumentResolver implements ArgumentResolver<NotificationHandler> {
+public class NotificationHandlerArgumentResolver implements ArgumentResolver<NotificationEmitter> {
 
   @Override
-  public NotificationHandler resolve(ExecutionContext executionContext) {
+  public NotificationEmitter resolve(ExecutionContext executionContext) {
     ExecutionContextAdapter adaptedExecutionContext = (ExecutionContextAdapter) executionContext;
-    return new DefaultNotificationHandler(adaptedExecutionContext.getMuleContext().getNotificationManager(),
+    return new DefaultNotificationEmitter(adaptedExecutionContext.getMuleContext().getNotificationManager(),
                                           adaptedExecutionContext.getEvent(),
                                           adaptedExecutionContext.getComponentLocation());
   }
