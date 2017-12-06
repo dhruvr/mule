@@ -7,11 +7,11 @@
 package org.mule.runtime.module.extension.internal.runtime.notification;
 
 import org.mule.runtime.api.component.location.ComponentLocation;
+import org.mule.runtime.api.metadata.TypedValue;
 import org.mule.runtime.core.api.context.notification.ServerNotificationManager;
 import org.mule.runtime.core.api.event.CoreEvent;
-import org.mule.runtime.extension.api.notification.ExtensionNotification;
+import org.mule.runtime.extension.api.notification.NotificationActionDefinition;
 import org.mule.runtime.extension.api.notification.NotificationEmitter;
-import org.mule.runtime.extension.api.notification.NotificationInfo;
 
 /**
  * Default implementation of {@link NotificationEmitter}.
@@ -30,8 +30,8 @@ public class DefaultNotificationEmitter implements NotificationEmitter {
   }
 
   @Override
-  public void fire(NotificationInfo notificationInfo) {
-    notificationManager.fireNotification(new ExtensionNotification(event, componentLocation, notificationInfo));
+  public void fire(NotificationActionDefinition action, TypedValue<?> data) {
+    notificationManager.fireNotification(new DefaultExtensionNotification(event, componentLocation, action, data));
   }
 
 }
