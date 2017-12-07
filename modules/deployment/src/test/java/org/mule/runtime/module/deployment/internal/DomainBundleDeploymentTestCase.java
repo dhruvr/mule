@@ -134,11 +134,40 @@ public class DomainBundleDeploymentTestCase extends AbstractDeploymentTestCase {
     assertDeploymentSuccess(domainBundleDeploymentListener, domainBundleFileBuilder.getId());
     assertDomainRedeploymentSuccess(dummyDomainFileBuilder.getId());
     assertApplicationRedeploymentSuccess(applicationFileBuilder1.getId());
-    // TODO(pablo.kraan): notifications - this must be assertRedeploymentFailure as the app does not exists anymore
-    assertUndeploymentSuccess(applicationDeploymentListener, applicationFileBuilder2.getId());
+    assertApplicationRedeploymentFailure(applicationFileBuilder2.getId());
   }
 
-  // TODO(pablo.kraan): notifications - add test with domain bundle including updated versions of apps (like app-1.0.0 and app-1.0.1)
+  @Test
+  public void redeploysDomainBundleWithPatchedApp() throws Exception {
+    ApplicationFileBuilder applicationFileBuilder =
+      new ApplicationFileBuilder(dummyAppDescriptorFileBuilder).dependingOn(dummyDomainFileBuilder);
+    DomainBundleFileBuilder domainBundleFileBuilder =
+      new DomainBundleFileBuilder(dummyDomainFileBuilder).containing(applicationFileBuilder);
+
+    addDomainBundleFromBuilder(domainBundleFileBuilder);
+
+    startDeployment();
+
+    assertDeploymentSuccess(domainBundleDeploymentListener, domainBundleFileBuilder.getId());
+    assertDeploymentSuccess(domainDeploymentListener, dummyDomainFileBuilder.getId());
+    assertApplicationDeploymentSuccess(applicationDeploymentListener, dummyAppDescriptorFileBuilder.getId());
+
+    reset(domainDeploymentListener);
+    reset(domainBundleDeploymentListener);
+    reset(applicationDeploymentListener);
+
+    ApplicationFileBuilder patchedApp = new ApplicationFileBuilder(dummyAppDescriptorFileBuilder).dependingOn(dummyDomainFileBuilder)
+      .withVersion("1.0.1");
+
+    DomainBundleFileBuilder updatedDomainBundleFileBuilder =
+      new DomainBundleFileBuilder(dummyDomainFileBuilder).containing(patchedApp);
+
+    addDomainBundleFromBuilder(updatedDomainBundleFileBuilder);
+
+    assertDeploymentSuccess(domainBundleDeploymentListener, updatedDomainBundleFileBuilder.getId());
+    assertDomainRedeploymentSuccess(dummyDomainFileBuilder.getId());
+    assertApplicationRedeploymentSuccess(dummyAppDescriptorFileBuilder.getId());
+  }
 
   @Test
   public void redeploysDomainBundleWithBrokenDomain() throws Exception {
